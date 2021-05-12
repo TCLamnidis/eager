@@ -1,10 +1,10 @@
-# ![nf-core/eager](docs/images/nf-core-eager_logo.png)
+# ![nf-core/eager](docs/images/nf-core_eager_logo.png)
 
 **A fully reproducible and state-of-the-art ancient DNA analysis pipeline**.
 
 [![GitHub Actions CI Status](https://github.com/nf-core/eager/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/eager/actions)
 [![GitHub Actions Linting Status](https://github.com/nf-core/eager/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/eager/actions)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A520.04.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A520.07.1-brightgreen.svg)](https://www.nextflow.io/)
 [![nf-core](https://img.shields.io/badge/nf--core-pipeline-brightgreen.svg)](https://nf-co.re/)
 [![DOI](https://zenodo.org/badge/135918251.svg)](https://zenodo.org/badge/latestdoi/135918251)
 
@@ -22,10 +22,42 @@
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible. The pipeline pre-processes raw data from FASTQ inputs, or preprocessed BAM inputs. It can align reads and performs extensive general NGS and aDNA specific quality-control on the results. It comes with docker, singularity or conda containers making installation trivial and results highly reproducible.
 
 <p align="center">
-    <img src="docs/images/output/overview/eager2_workflow.png" alt="nf-core/eager schematic workflow" width="70%"
+    <img src="docs/images/usage/eager2_workflow.png" alt="nf-core/eager schematic workflow" width="70%"
 </p>
 
-## Pipeline steps
+## Quick Start
+
+1. Install [`nextflow`](https://nf-co.re/usage/installation) (version >= 20.04.0)
+
+2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
+
+3. Download the pipeline and test it on a minimal dataset with a single command:
+
+    ```bash
+    nextflow run nf-core/eager -profile test_tsv,<docker/singularity/podman/shifter/charliecloud/conda/institute>
+    ```
+
+    > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+
+4. Start running your own analysis!
+
+    ```bash
+    nextflow run nf-core/eager -profile <docker/singularity/podman/conda/institute> --input '*_R{1,2}.fastq.gz' --fasta '<your_reference>.fasta'
+    ```
+
+5. Once your run has completed successfully, clean up the intermediate files.
+
+    ```bash
+    nextflow clean -f -k
+    ```
+
+See [usage docs](https://nf-co.re/eager/docs/usage.md) for all of the available options when running the pipeline.
+
+**N.B.** You can see an overview of the run in the MultiQC report located at `./results/MultiQC/multiqc_report.html`
+
+Modifications to the default pipeline are easily made using various options as described in the documentation.
+
+## Pipeline Summary
 
 ### Default Steps
 
@@ -77,6 +109,7 @@ Additional functionality contained by the pipeline currently includes:
 
 #### Metagenomic Screening
 
+* Low-sequenced complexity filtering (`BBduk`)
 * Taxonomic binner with alignment (`MALT`)
 * Taxonomic binner without alignment (`Kraken2`)
 * aDNA characteristic screening of taxonomically binned data from MALT (`MaltExtract`)
@@ -86,50 +119,8 @@ Additional functionality contained by the pipeline currently includes:
 A graphical overview of suggested routes through the pipeline depending on context can be seen below.
 
 <p align="center">
-    <img src="docs/images/output/overview/eager2_metromap_complex.png" alt="nf-core/eager metro map" width="70%"
+    <img src="docs/images/usage/eager2_metromap_complex.png" alt="nf-core/eager metro map" width="70%"
 </p>
-
-## Quick Start
-
-1. Install [`nextflow`](https://nf-co.re/usage/installation) (version >= 20.04.0)
-
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) or [`Podman`](https://podman.io/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
-
-3. Download the pipeline and test it on a minimal dataset with a single command:
-
-    ```bash
-    nextflow run nf-core/eager -profile test,<docker/singularity/podman/conda/institute>
-    ```
-
-    > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-
-4. Start running your own analysis!
-
-    ```bash
-    nextflow run nf-core/eager -profile <docker/singularity/conda> --input '*_R{1,2}.fastq.gz' --fasta '<your_reference>.fasta'
-    ```
-
-5. Once your run has completed successfully, clean up the intermediate files.
-
-    ```bash
-    nextflow clean -f -k
-    ```
-
-See [usage docs](https://nf-co.re/eager/docs/usage.md) for all of the available options when running the pipeline.
-
-**N.B.** You can see an overview of the run in the MultiQC report located at `./results/MultiQC/multiqc_report.html`
-
-Modifications to the default pipeline are easily made using various options
-as described in the documentation.
-
-## Pipeline Summary
-
-By default, the pipeline currently performs the following:
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of default steps of pipeline -->
-
-* Sequencing quality control (`FastQC`)
-* Overall pipeline run summaries (`MultiQC`)
 
 ## Documentation
 
@@ -167,8 +158,12 @@ of this pipeline:
 
 Those who have provided conceptual guidance, suggestions, bug reports etc.
 
+* [Alexandre Gilardet](https://github.com/alexandregilardet)
 * Arielle Munters
+* [Charles Plessy](https://github.com/charles-plessy)
+* [Åshild Vågene](https://github.com/ashildv)
 * [Hester van Schalkwyk](https://github.com/hesterjvs)
+* [Ido Bar](https://github.com/IdoBar)
 * [Irina Velsko](https://github.com/ivelsko)
 * [Katerine Eaton](https://github.com/ktmeaton)
 * [Luc Venturini](https://github.com/lucventurini)
@@ -192,7 +187,8 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 If you use `nf-core/eager` for your analysis, please cite the `eager` preprint as follows:
-> James A. Fellows Yates, Thiseas Christos Lamnidis, Maxime Borry, Aida Andrades Valtueña, Zandra Fagneräs, Stephen Clayton, Maxime U. Garcia, Judith Neukamm, Alexander Peltzer **Reproducible, portable, and efficient ancient genome reconstruction with nf-core/eager** bioRxiv 2020.06.11.145615; [doi: https://doi.org/10.1101/2020.06.11.145615](https://doi.org/10.1101/2020.06.11.145615)
+
+> Fellows Yates JA, Lamnidis TC, Borry M, Valtueña Andrades A, Fagernäs Z, Clayton S, Garcia MU, Neukamm J, Peltzer A. 2021. Reproducible, portable, and efficient ancient genome reconstruction with nf-core/eager. PeerJ 9:e10947. DOI: [10.7717/peerj.10947](https://doi.org/10.7717/peerj.10947).
 
 You can cite the eager zenodo record for a specific version using the following [doi: 10.5281/zenodo.3698082](https://zenodo.org/badge/latestdoi/135918251)
 
@@ -203,7 +199,6 @@ You can cite the `nf-core` publication as follows:
 > Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
 >
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
-> ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)
 
 In addition, references of tools and data used in this pipeline are as follows:
 
@@ -212,7 +207,7 @@ In addition, references of tools and data used in this pipeline are as follows:
 * **AdapterRemoval v2** Schubert, M., Lindgreen, S., & Orlando, L. (2016). AdapterRemoval v2: rapid adapter trimming, identification, and read merging. BMC Research Notes, 9, 88. [https://doi.org/10.1186/s13104-016-1900-2](https://doi.org/10.1186/s13104-016-1900-2). Download: [https://github.com/MikkelSchubert/adapterremoval](https://github.com/MikkelSchubert/adapterremoval)
 * **bwa** Li, H., & Durbin, R. (2009). Fast and accurate short read alignment with Burrows-Wheeler transform. Bioinformatics , 25(14), 1754–1760. [https://doi.org/10.1093/bioinformatics/btp324](https://doi.org/10.1093/bioinformatics/btp324). Download: [http://bio-bwa.sourceforge.net/bwa.shtml](http://bio-bwa.sourceforge.net/bwa.shtml)
 * **SAMtools** Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer, N., … 1000 Genome Project Data Processing Subgroup. (2009). The Sequence Alignment/Map format and SAMtools. Bioinformatics , 25(16), 2078–2079. [https://doi.org/10.1093/bioinformatics/btp352](https://doi.org/10.1093/bioinformatics/btp352). Download: [http://www.htslib.org/](http://www.htslib.org/)
-* **DamageProfiler** Neukamm, J., Peltzer, A., & Nieselt, K. (2020). DamageProfiler: Fast damage pattern calculation for ancient DNA. In biorXiv (p. 2020.10.01.322206). [https://doi.org/10.1101/2020.10.01.322206](https://doi.org/10.1101/2020.10.01.322206). Download: [https://github.com/Integrative-Transcriptomics/DamageProfiler](https://github.com/Integrative-Transcriptomics/DamageProfiler)
+* **DamageProfiler** Neukamm, J., Peltzer, A., & Nieselt, K. (2020). DamageProfiler: Fast damage pattern calculation for ancient DNA. In Bioinformatics (btab190). [https://doi.org/10.1093/bioinformatics/btab190](https://doi.org/10.1093/bioinformatics/btab190). Download: [https://github.com/Integrative-Transcriptomics/DamageProfiler](https://github.com/Integrative-Transcriptomics/DamageProfiler)
 * **QualiMap** Okonechnikov, K., Conesa, A., & García-Alcalde, F. (2016). Qualimap 2: advanced multi-sample quality control for high-throughput sequencing data. Bioinformatics , 32(2), 292–294. [https://doi.org/10.1093/bioinformatics/btv566](https://doi.org/10.1093/bioinformatics/btv566). Download: [http://qualimap.bioinfo.cipf.es/](http://qualimap.bioinfo.cipf.es/)
 * **preseq** Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of sequencing libraries. Nature Methods, 10(4), 325–327. [https://doi.org/10.1038/nmeth.2375](https://doi.org/10.1038/nmeth.2375). Download: [http://smithlabresearch.org/software/preseq/](http://smithlabresearch.org/software/preseq/)
 * **PMDTools** Skoglund, P., Northoff, B. H., Shunkov, M. V., Derevianko, A. P., Pääbo, S., Krause, J., & Jakobsson, M. (2014). Separating endogenous ancient DNA from modern day contamination in a Siberian Neandertal. Proceedings of the National Academy of Sciences of the United States of America, 111(6), 2229–2234. [https://doi.org/10.1073/pnas.1318934111](https://doi.org/10.1073/pnas.1318934111). Download: [https://github.com/pontussk/PMDtools](https://github.com/pontussk/PMDtools)
@@ -236,6 +231,8 @@ In addition, references of tools and data used in this pipeline are as follows:
 * **Bowtie2**  Langmead, B. and Salzberg, S. L. 2012 Fast gapped-read alignment with Bowtie 2. Nature methods, 9(4), p. 357–359. doi: [10.1038/nmeth.1923](https:/dx.doi.org/10.1038/nmeth.1923).
 * **sequenceTools** Stephan Schiffels (Unpublished). Download: [https://github.com/stschiff/sequenceTools](https://github.com/stschiff/sequenceTools)
 * **EigenstratDatabaseTools** Thiseas C. Lamnidis (Unpublished). Download: [https://github.com/TCLamnidis/EigenStratDatabaseTools.git](https://github.com/TCLamnidis/EigenStratDatabaseTools.git)
+* **mapDamage2** Jónsson, H., et al 2013. mapDamage2.0: fast approximate Bayesian estimates of ancient DNA damage parameters. Bioinformatics , 29(13), 1682–1684. [https://doi.org/10.1093/bioinformatics/btt193](https://doi.org/10.1093/bioinformatics/btt193)
+* **BBduk** Brian Bushnell (Unpublished). Download: [https://sourceforge.net/projects/bbmap/](sourceforge.net/projects/bbmap/)
 
 ## Data References
 
@@ -244,3 +241,4 @@ This repository uses test data from the following studies:
 * Fellows Yates, J. A. et al. (2017) ‘Central European Woolly Mammoth Population Dynamics: Insights from Late Pleistocene Mitochondrial Genomes’, Scientific reports, 7(1), p. 17714. [doi: 10.1038/s41598-017-17723-1](https://doi.org/10.1038/s41598-017-17723-1).
 * Gamba, C. et al. (2014) ‘Genome flux and stasis in a five millennium transect of European prehistory’, Nature communications, 5, p. 5257. [doi: 10.1038/ncomms6257](https://doi.org/10.1038/ncomms6257).
 * Star, B. et al. (2017) ‘Ancient DNA reveals the Arctic origin of Viking Age cod from Haithabu, Germany’, Proceedings of the National Academy of Sciences of the United States of America, 114(34), pp. 9152–9157. [doi: 10.1073/pnas.1710186114](https://doi.org/10.1073/pnas.1710186114).
+* de Barros Damgaard, P. et al. (2018). '137 ancient human genomes from across the Eurasian steppes.', Nature, 557(7705), 369–374. [doi: 10.1038/s41586-018-0094-2](https://doi.org/10.1038/s41586-018-0094-2)

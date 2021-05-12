@@ -3,6 +3,118 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## v2.3.4 - 2021-05-05
+
+### `Added`
+
+- [#729](https://github.com/nf-core/eager/issues/729) Added Bowtie2 flag `--maxins` for PE mapping modern DNA mapping contexts
+
+### `Fixed`
+
+- Corrected explanation of the "--min_adap_overlap" parameter for AdapterRemoval in the docs
+- [#725](https://github.com/nf-core/eager/pull/725) `bwa_index` doc update
+- Re-adds gzip piping to AdapterRemovalFixPrefix to speed up process after reports of being very slow
+- Updated DamageProfiler citation from bioRxiv to publication
+
+### `Dependencies`
+
+- Removed pinning of `tbb` (upstream bug in bioconda fixed)
+- Bumped `pigz` to 2.6 to fix rare stall bug when compressing data after AdapterRemoval
+- Bumped Bowtie2 to 2.4.2 to fix issues with `tbb` version
+
+### `Deprecated`
+
+## v2.3.3 - 2021-04-08
+
+### `Added`
+
+- [#349](https://github.com/nf-core/eager/issues/349) - Added option enabling platypus formatted output of pmdtools misincorporation frequencies.
+
+### `Fixed`
+
+- [#719](https://github.com/nf-core/eager/pull/719) - Fix filename for bam output of `mapdamage_rescaling`
+- [#707](https://github.com/nf-core/eager/pull/707) - Fix typo in UnifiedGenotyper IndelRealigner command
+- Fixed some Java tools not following process memory specifications
+- Updated template to nf-core/tools 1.13.2
+- [#711](https://github.com/nf-core/eager/pull/711) - Fix conditional execution preventing multivcfanalyze to run
+- [#714](https://github.com/nf-core/eager/issues/714) - Fixes bug in nuc contamination by upgrading to latest MultiQC v1.10.1 bugfix release
+
+### `Dependencies`
+
+### `Deprecated`
+
+## [2.3.2] - 2021-03-16
+
+### `Added`
+
+- [#687](https://github.com/nf-core/eager/pull/687) - Adds Kraken2 unique kmer counting report
+- [#676](https://github.com/nf-core/eager/issues/676) - Refactor help message / summary message formatting to automatic versions using nf-core library
+- [#682](https://github.com/nf-core/eager/issues/682) - Add AdapterRemoval `--qualitymax` flag to allow FASTQ Phred score range max more than 41
+
+### `Fixed`
+
+- [#666](https://github.com/nf-core/eager/issues/666) - Fixed input file staging for `print_nuclear_contamination`
+- [#631](https://github.com/nf-core/eager/issues/631) - Update minimum Nextflow version to 20.07.1, due to unfortunate bug in Nextflow 20.04.1 causing eager to crash if patch pulled
+- Made MultiQC crash behaviour stricter when dealing with large datasets, as reported by @ashildv
+- [#652](https://github.com/nf-core/eager/issues/652) - Added note to documentation that when using `--skip_collapse` this will use _paired-end_ alignment mode with mappers when using PE data
+- [#626](https://github.com/nf-core/eager/issues/626) - Add additional checks to ensure pipeline will give useful error if cells of a TSV column are empty
+- Added note to documentation that when using `--skip_collapse` this will use _paired-end_ alignment mode with mappers when using PE data
+- [#673](https://github.com/nf-core/eager/pull/673) - Fix Kraken database loading when loading from directory instead of compressed file
+- [#688](https://github.com/nf-core/eager/issues/668) - Allow pipeline to complete, even if Qualimap crashes due to an empty or corrupt BAM file for one sample/library
+- [#683](https://github.com/nf-core/eager/pull/683) - Sets `--igenomes_ignore` to true by default, as rarely used by users currently and makes resolving configs less complex
+- Added exit code `140` to re-tryable exit code list to account for certain scheduler wall-time limit fails
+- [#672](https://github.com/nf-core/eager/issues/672) - Removed java parameter from picard tools which could cause memory issues
+- [#679](https://github.com/nf-core/eager/issues/679) - Refactor within-process bash conditions to groovy/nextflow, due to incompatibility with some servers environments
+- [#690](https://github.com/nf-core/eager/pull/690) - Fixed ANGSD output mode for beagle by setting `-doMajorMinor 1` as default in that case
+- [#693](https://github.com/nf-core/eager/issues/693) - Fixed broken TSV input validation for the Colour Chemistry column
+- [#695](https://github.com/nf-core/eager/issues/695) - Fixed incorrect `-profile` order in tutorials (originally written reversed due to [nextflow bug](https://github.com/nextflow-io/nextflow/issues/1792))
+- [#653](https://github.com/nf-core/eager/issues/653) - Fixed file collision errors with sexdeterrmine for two same-named libraries with different strandedness
+
+### `Dependencies`
+
+- Bumped MultiQC to 1.10 for improved functionality
+- Bumped HOPS to 0.35 for MultiQC 1.10 compatibility
+
+### `Deprecated`
+
+## [2.3.1] - 2021-01-14
+
+### `Added`
+
+### `Fixed`
+
+- [#654](https://github.com/nf-core/eager/issues/654) - Fixed some values in JSON schema (used in launch GUI) not passing validation checks during run
+- [#655](https://github.com/nf-core/eager/issues/655) - Updated read groups for all mappers to allow proper GATK validation
+- Fixed issue with Docker container not being pullable by Nextflow due to version-number inconsistencies
+
+### `Dependencies`
+
+### `Deprecated`
+
+## [2.3.0] - 2021-01-11 - "Aalen"
+
+### `Added`
+
+- [#640](https://github.com/nf-core/eager/issues/640) - Added a pre-metagenomic screening filtering of low-sequence complexity reads with `bbduk`
+- [#583](https://github.com/nf-core/eager/issues/583) - Added `mapDamage2` rescaling of BAM files to remove damage
+- Updated usage (merging files) and workflow images reflecting new functionality.
+
+### `Fixed`
+
+- Removed leftover old DockerHub push CI commands.
+- [#627](https://github.com/nf-core/eager/issues/627) - Added de Barros Damgaard citation to README
+- [#630](https://github.com/nf-core/eager/pull/630) - Better handling of Qualimap memory requirements and error strategy.
+- Fixed some incomplete schema options to ensure users supply valid input values
+- [#638](https://github.com/nf-core/eager/issues/638#issuecomment-748877567) Fixed inverted circularfilter filtering (previously filtering would happen by default, not when requested by user as originally recorded in documentation)
+- [DeDup:](https://github.com/apeltzer/DeDup/commit/07d47868f10a6830da8c9161caa3755d9da155bf) Fixed Null Pointer Bug in DeDup by updating to 0.12.8 version
+- [#650](https://github.com/nf-core/eager/pull/650) - Increased memory given to FastQC for larger files by making it multithreaded
+
+### `Dependencies`
+
+- Update: DeDup v0.12.7 to v0.12.8
+
+### `Deprecated`
+
 ## [2.2.2] - 2020-12-09
 
 ### `Added`
